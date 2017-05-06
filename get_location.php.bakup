@@ -1,0 +1,121 @@
+<?php
+function getDistanceBetweenPointsNew($latitude1, $longitude1, $latitude2, $longitude2) 
+{
+ 
+    $theta = $longitude1 - $longitude2;
+ 
+    $miles = (sin(deg2rad($latitude1)) * sin(deg2rad($latitude2))) + (cos(deg2rad($latitude1)) * cos(deg2rad($latitude2)) * cos(deg2rad($theta)));
+ 
+    $miles = acos($miles);
+ 
+    $miles = rad2deg($miles);
+ 
+    $miles = $miles * 60 * 1.1515;
+ 
+    $feet = $miles * 5280;
+ 
+    $yards = $feet / 3;
+ 
+    $kilometers = $miles * 1.609344;
+ 
+    $meters = $kilometers * 1000;
+ 
+    return compact( meters );
+}
+function getaddress($lat,$lng)
+{
+$url =  http://maps.googleapis.com/maps/api/geocode/json?latlng= .trim($lat). , .trim($lng). &sensor=false ;
+$json = @file_get_contents($url);
+$data=json_decode($json);
+$status = $data->status;
+if($status=="OK")
+return $data->results[0]->formatted_address;
+else
+return "Không có vị trí";
+}
+require_once( connect_database.php );
+$user = addslashes(mysql_real_escape_string($_POST[ user ]));
+$pass = md5(sha1(md5($_POST[ pass ])));
+$so_imei = addslashes(mysql_real_escape_string($_POST[ imei ]));
+$lat = addslashes(mysql_real_escape_string($_POST[ lat ]));
+$lng = addslashes(mysql_real_escape_string($_POST[ lng ]));
+$sql = mysql_query("select * from user where user =  $user ");
+$lat=str_replace(",",".",$lat);
+$lng=str_replace(",",".",$lng);
+foreach ($distance as $unit => $value) 
+			{
+ 
+			$khoang=number_format($value,4);
+			}
+if (mysql_num_rows($sql)>0)
+	{
+		$admin = @mysql_fetch_array($sql);
+		if ($admin[ pass ] == $pass)
+		{
+			
+			$user_id = $admin[ id ];
+			//$a = mysql_query("INSERT INTO `imei`(`user_id`,`so_imei`) VALUES ( $user_id , $so_imei )");
+			$tmp = mysql_fetch_array(mysql_query("select `id` from `imei` where so_imei= $so_imei "));
+			$id_imei=$tmp[ id ];
+			$vitri=getaddress($lat,$lng);
+			if ($khoang<25)
+			{
+				$tocdo =  0 ;
+			}
+			if (($khoang>=25) and ($khoang<=50))
+			{
+				$tocdo =  3 ;
+			}
+			if (($khoang>=50) and ($khoang<=100))
+			{
+				$tocdo =  9 ;
+			}
+			if (($khoang>100) and ($khoang<=300))
+			{
+				$tocdo =  23 ;
+			}
+			if (($khoang>300) and ($khoang<=500))
+			{
+				$tocdo =  47;
+			}
+			if (($khoang>500) and ($khoang<=700))
+			{
+				$tocdo = 72;
+			}
+			if (($khoang>700) and ($khoang<=900))
+			{
+				$tocdo =  95  ;
+			}
+			if (($khoang>900) and ($khoang<=1100))
+			{
+				$tocdo = 119;
+			}
+			if (($khoang>1100) and ($khoang<=1300))
+			{
+				$tocdo = 144;
+			}
+			if (($khoang>1100) and ($khoang<=1300))
+			{
+				$tocdo =  144  ;
+			}
+			if (($khoang>1300) and ($khoang<=1500))
+			{
+				$tocdo =  168  ;
+			}
+			if ($khoang>1500)
+			{
+				$tocdo =  180 ;
+			}
+			$b = mysql_query("UPDATE `location` SET `lat`= $lat ,`lng`= $lng , `date`= $today , `time`= $time , `vitri`= $vitri , `tocdo`= $tocdo  WHERE `id_imei` =  $id_imei ");
+			$c = mysql_query("INSERT INTO `tracking`(`id_imei`,`lat`, `lng`, `date`, `time`, `vitri`, `tocdo`) VALUES ( $id_imei , $lat , $lng , $today , $time , $vitri , $tocdo )");
+if ($b) echo  001 ; else echo  002 ;
+			if ($tocdo >=50)
+			{
+				echo  'Cảnh báo: Tốc độ vượt quá mức cho phép! ';
+			}
+			echo  'Success';
+		}
+		else echo  'Wrong password';
+	}
+	else echo "None";
+?>

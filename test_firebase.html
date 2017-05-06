@@ -1,0 +1,33 @@
+<html>
+   <head>
+	
+<script src="https://www.gstatic.com/firebasejs/3.7.4/firebase-app.js"></script>	
+<script src="https://www.gstatic.com/firebasejs/3.7.5/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyCQrxLXsSmmXWe4gyoYyGMi0M7g_9r71as",
+    authDomain: "test-412bf.firebaseapp.com",
+    databaseURL: "https://test-412bf.firebaseio.com",
+    projectId: "test-412bf",
+    storageBucket: "test-412bf.appspot.com",
+    messagingSenderId: "951425815971"
+  };
+  firebase.initializeApp(config);
+  var database = firebase.database();
+  function writeUserData(userId, name, email) {
+  firebase.database().ref('users/' + userId).set({
+    username: name,
+    email: email,
+  });
+}
+writeUserData(1,ABC,xyz@gmail.com);
+</script>
+
+   </head>
+	
+   <body>
+
+   </body>
+	
+</html>

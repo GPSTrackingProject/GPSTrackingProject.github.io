@@ -1,0 +1,104 @@
+Thiết kế csdl cho GPS Tracking
+------------------
+Đầu tiên chúng ta sẽ tìm hiểu về IMEI
+"
+Số IMEI là một chuỗi số duy nhất được gán duy nhất cho mỗi máy GSM hay máy UMTS. Thường dãy số này được in trên tem máy nằm phía dưới Pin hay có thể bấm *#06# sẽ hiện ra trên màn hình. Số IMEI thường được sử dụng trong mạng GSM để nhận dạng sự hợp pháp của máy đầu cuối nhờ đó mạng có thể không cho các máy ăn cắp có thể gọi. Ví dụ nếu một máy điện thoại bị mất cắp, người chủ có thể gọi tới tổng đài yêu cầu tổng đài chặn máy điện thoại sử dụng số IMEI này. Do đó máy này sẽ không thể gọi được cho dù có thay thế SIM di động khác.
+
+
+"
+
+Vì vậy để phân biệt giữa điện thoại này với điện thoại khác ta sẽ dựa vào số IMEI này
+------------------------
+Thiết kế csdl:
+-	Bảng user
+	id
+	username
+	password
+	email
+- 	Table "imei"
+	id
+	user_id
+	bangsoxe
+	so_imei
+-	Table "location": luu tru vi tri hien tai cua xe (vi tri cuoi cung cua xe)
+//	Moi thiet bi chi co 1 dong duy nhat trong bang nay
+	id
+	id_imei
+	date: kieu text (dd-mm-yyyy)
+	time: kieu text (hh:mm:ss)
+	lat: vi do
+	lng: kinh do
+	vitri: ten cua vi tri do: vi du: duong dt743 Binh Thang, Di an, binh duong
+-	Table "tracking": luu lai toan bo vi tri cua xe
+// khi cap nhat moi vi tri cho xe, ta se lay thong tin hien tai insert vao bang nay
+	id
+	id_imei
+	date
+	time
+	lat
+	lng
+	vitri
+	
+	
+	
+Vi du:
+Bang user
+1|luongtankhang123|md5(123456)|luongtankhang123@gmail.com
+...
+Bang imei
+1|1|61D5-3669|3151515151515151545451
+2|1|61E5-3658|6251515151515151515151
+....
+->thang user co id=1 co 2 xe la 61D5 va 61E5
+Bang location
+1|1|03-05-2016|08:06:33|60.6262626|69.696969|duong CMT8, Bien Hoa Dong Nai
+2|2|03-04-2016|00:00:00|60.3333333|69.222222|duong 30-4 , bien hoa dong nai
+......
+Bang tracking
+// Xe 1
+1|1|03-05-2016|00:00:01|60.1212121|69.333333|duong 30-4
+2|1|03-05-2016|00:00:30|60.1212122|69.444444|duong 30-4
+....
+....
+/// ------------------END --------------
+
+Thiết kế ứng dụng
+Xây dựng phần admin trước
+
+Đầu tiên đi tìm 1 backend đẹp đẹp
+https://github.com/puikinsh/gentelella
+tải về xong chỉnh lại
+Admin cần có
+- Quản lý được tổng số user, tổng số xe, số xe đang hoạt động
+- Quản lý được vị trí của từng xe, tái hiện lại quá trình di chuyển của từng xe,số km đã đi trong ngày, tháng, năm,..., thời gian xe đã dừng,...
+- Quản lý tốc độ hiện tại của từng xe, cảnh báo cho chủ xe nếu quá tốc độ (đây là phần mới hơn của anh)
+- Vì xe điện thoại sẽ được đặt quay màn hình về tài xế, nằm ngang với phần kiến hậu chỗ tài xế nên mình thêm chức năng chụp hình theo thời gian thực, tức là cứ 30s thì sẽ chuoj lại toàn bộ khung cảnh trong xe lại và gửi về cho người quản lý (phần mới)
+Phần user
+- Quản lý được đầy đủ thông tin về các xe của mình (vị trí hiện tại, tốc độ, quá trình lưu thông trong ngày, số km đã đi trong ngày tháng năm, số lần xe đó bị cảnh báo quá tốc độ, hình ảnh hiện tại trong xe, hình ảnh của xe theo thời gian trong ngày (tạo 1 slide view hình rồi cho hình nó chạy thôi))
+---------------- Xong phần ý tưởng -------------------------
+Giờ tới phần thực hiện
+Từ giờ (03-05-2016)  đến ngày thứ 7(07-05-2015) team view hay chia nhau ra làm cho anh
+- Giao diện đăng nhập, đăng ký bằng bootstrap (lấy cái admin hồi nãy cắt ra)
+- giao diện quản lý cho thằng admin (làm đơn giản thôi)
+- Giao diện quản lý cho thằng User
+- Tìm hiểu về google map api v3 cho javascript
+-------------------Google map api v3------------
+Google search
+
+-- Đổi lá cờ đó thành hình cái xe => biểu hiện được cái xe lên map
+Còn lại tự xem đi
+Anh có code mẫu ở đây
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
